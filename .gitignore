@@ -1,0 +1,15 @@
+node_modules/
+.next/
+out/
+coverage/
+playwright-report/
+test-results/
+.env*
+!.env.example
+*.tsbuildinfo
+contract/generated/
+public/zk/
+.local/
+*.credential.json
+*.log
+.DS_Store
