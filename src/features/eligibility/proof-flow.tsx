@@ -1,14 +1,183 @@
 'use client';
-import {useState} from 'react';
+import { useMemo, useState } from 'react';
 import Link from 'next/link';
-import {useSearchParams} from 'next/navigation';
-import {ArrowLeft,ShieldCheck,ShieldX,LockKeyhole,RotateCcw} from 'lucide-react';
-import {useRecall} from '@/providers/recall-provider';
-import {CredentialImport} from '@/features/credentials/credential-import';
-import {Button} from '@/components/ui/button';
-import {Loading} from '@/components/shared/form';
-import {safeError} from '@/lib/midnight/errors';
-import {campaignStatus} from '@/lib/validation/campaign';
-export function ProofFlow(){const r=useRecall();const params=useSearchParams();const [selected,setSelected]=useState(params.get('campaign')??'');const [phase,setPhase]=useState<'idle'|'proving'|'success'|'failure'>('idle');const [reason,setReason]=useState('');const c=r.data.campaigns.find(c=>c.id===selected);async function prove(){if(!r.gateway||!r.credential||!c)return;setPhase('proving');setReason('');try{await r.gateway.prove(c.id,r.credential);setPhase('success');await r.refresh();}catch(e){setReason(safeError(e));setPhase('failure');}}
- return <div className="wrap"><Link className="back" href="/customer"><ArrowLeft size={16}/>Customer workspace</Link><div className="page-head"><div><h1>Check recall eligibility</h1><p className="muted">Prove the conditions without publishing your private credential.</p></div></div><div className="workspace"><CredentialImport/><section><div className="field"><label htmlFor="campaign-select">Recall campaign</label><select id="campaign-select" value={selected} disabled={phase==='proving'} onChange={e=>{setSelected(e.target.value);setPhase('idle');}}><option value="">Select a recall campaign</option>{r.data.campaigns.map(c=><option key={c.id} value={c.id}>{c.title} / {campaignStatus(c)}</option>)}</select></div>{c?<><div className="notice"><span>{c.reason}</span></div><p className="muted">{c.modelId} / {c.batchId} / {campaignStatus(c)}</p></>:null}{phase==='proving'?<div className="proof-result" aria-live="polite"><Loading text={r.gateway?.mode==='demo'?'Checking compiled contract locally...':'Generating proof and awaiting network confirmation...'}/><div className="progress-steps" aria-hidden="true"><span className="done"/><span/><span/></div><p className="muted">Keep this tab open. Your wallet may request confirmation.</p></div>:phase==='success'?<div className="proof-result" role="status"><ShieldCheck size={42}/><h2>Eligible for this recall</h2><p>{r.gateway?.mode==='demo'?'Local simulation passed. This is not an on-chain ZK proof.':'The Midnight transaction was confirmed with a valid eligibility proof.'}</p><p className="muted" style={{marginTop:12}}>Disclosed: campaign ID, hiding commitment and successful verification count. Serial number, secret and salt remain private.</p><p style={{marginTop:12}}>No compensation entitlement has been created.</p></div>:phase==='failure'?<div className="proof-result error" role="alert"><ShieldX size={42}/><h2>Eligibility not confirmed</h2><p>{reason}</p><p className="muted" style={{marginTop:12}}>No successful check was recorded by this flow.</p></div>:<div className="proof-result"><LockKeyhole size={34}/><h2>Private by construction</h2><p>The contract verifies a registered commitment, matching batch, model, warranty and campaign dates.</p></div>}<Button disabled={!r.credential||!c||r.status!=='connected'||phase==='proving'} onClick={()=>void prove()}>{phase==='failure'?<RotateCcw/>:<ShieldCheck/>}{phase==='failure'?'Retry eligibility check':phase==='proving'?'Verification in progress':'Verify eligibility'}</Button>{r.status!=='connected'?<p className="muted" style={{marginTop:10}}>Connect a wallet or start the local demo to continue.</p>:null}</section></div></div>;
+import { useSearchParams } from 'next/navigation';
+import {
+  ArrowLeft,
+  ShieldCheck,
+  ShieldX,
+  LockKeyhole,
+  RotateCcw,
+} from 'lucide-react';
+import { useRecall } from '@/providers/recall-provider';
+import { CredentialImport } from '@/features/credentials/credential-import';
+import { Button } from '@/components/ui/button';
+import { Loading } from '@/components/shared/form';
+import { safeError } from '@/lib/midnight/errors';
+import { campaignStatus } from '@/lib/validation/campaign';
+import { commitmentOf } from '@/lib/crypto/commitment';
+export function ProofFlow() {
+  const r = useRecall();
+  const params = useSearchParams();
+  const [selected, setSelected] = useState(params.get('campaign') ?? '');
+  const [storedPhase, setPhase] = useState<
+    'idle' | 'proving' | 'success' | 'failure'
+  >('idle');
+  const commitment = useMemo(
+    () => (r.credential ? commitmentOf(r.credential) : ''),
+    [r.credential],
+  );
+  const [checkedCommitment, setCheckedCommitment] = useState('');
+  const phase =
+    commitment && commitment === checkedCommitment && r.status === 'connected'
+      ? storedPhase
+      : 'idle';
+  const [reason, setReason] = useState('');
+  const c = r.data.campaigns.find((c) => c.id === selected);
+  async function prove() {
+    if (!r.gateway || !r.credential || !c) return;
+    setCheckedCommitment(commitment);
+    setPhase('proving');
+    setReason('');
+    try {
+      await r.gateway.prove(c.id, r.credential);
+      setPhase('success');
+      await r.refresh();
+    } catch (e) {
+      setReason(safeError(e));
+      setPhase('failure');
+    }
+  }
+  return (
+    <div className="wrap">
+      <Link className="back" href="/customer">
+        <ArrowLeft size={16} />
+        Customer workspace
+      </Link>
+      <div className="page-head">
+        <div>
+          <h1>Check recall eligibility</h1>
+          <p className="muted">
+            Prove the conditions without publishing your private credential.
+          </p>
+        </div>
+      </div>
+      <div className="workspace">
+        <fieldset
+          disabled={phase === 'proving'}
+          style={{ minWidth: 0, border: 0, padding: 0, margin: 0 }}
+        >
+          <CredentialImport />
+        </fieldset>
+        <section>
+          <div className="field">
+            <label htmlFor="campaign-select">Recall campaign</label>
+            <select
+              id="campaign-select"
+              value={selected}
+              disabled={phase === 'proving'}
+              onChange={(e) => {
+                setSelected(e.target.value);
+                setPhase('idle');
+              }}
+            >
+              <option value="">Select a recall campaign</option>
+              {r.data.campaigns.map((c) => (
+                <option key={c.id} value={c.id}>
+                  {c.title} / {campaignStatus(c)}
+                </option>
+              ))}
+            </select>
+          </div>
+          {c ? (
+            <>
+              <div className="notice">
+                <span>{c.reason}</span>
+              </div>
+              <p className="muted">
+                {c.modelId} / {c.batchId} / {campaignStatus(c)}
+              </p>
+            </>
+          ) : null}
+          {phase === 'proving' ? (
+            <div className="proof-result" aria-live="polite">
+              <Loading
+                text={
+                  r.gateway?.mode === 'demo'
+                    ? 'Checking compiled contract locally...'
+                    : 'Generating proof and awaiting network confirmation...'
+                }
+              />
+              <div className="progress-steps" aria-hidden="true">
+                <span className="done" />
+                <span />
+                <span />
+              </div>
+              <p className="muted">
+                Keep this tab open. Your wallet may request confirmation.
+              </p>
+            </div>
+          ) : phase === 'success' ? (
+            <div className="proof-result" role="status">
+              <ShieldCheck size={42} />
+              <h2>Eligible for this recall</h2>
+              <p>
+                {r.gateway?.mode === 'demo'
+                  ? 'Local simulation passed. This is not an on-chain ZK proof.'
+                  : 'The Midnight transaction was confirmed with a valid eligibility proof.'}
+              </p>
+              <p className="muted" style={{ marginTop: 12 }}>
+                Disclosed: campaign ID, hiding commitment and successful
+                verification count. Serial number, secret and salt remain
+                private.
+              </p>
+              <p style={{ marginTop: 12 }}>
+                No compensation entitlement has been created.
+              </p>
+            </div>
+          ) : phase === 'failure' ? (
+            <div className="proof-result error" role="alert">
+              <ShieldX size={42} />
+              <h2>Eligibility not confirmed</h2>
+              <p>{reason}</p>
+              <p className="muted" style={{ marginTop: 12 }}>
+                Check the public activity before retrying after a network
+                timeout; the transaction may already have been accepted.
+              </p>
+            </div>
+          ) : (
+            <div className="proof-result">
+              <LockKeyhole size={34} />
+              <h2>Private by construction</h2>
+              <p>
+                The contract verifies a registered commitment, matching batch,
+                model, warranty and campaign dates.
+              </p>
+            </div>
+          )}
+          <Button
+            disabled={
+              !r.credential ||
+              !c ||
+              r.status !== 'connected' ||
+              phase === 'proving'
+            }
+            onClick={() => void prove()}
+          >
+            {phase === 'failure' ? <RotateCcw /> : <ShieldCheck />}
+            {phase === 'failure'
+              ? 'Retry eligibility check'
+              : phase === 'proving'
+                ? 'Verification in progress'
+                : 'Verify eligibility'}
+          </Button>
+          {r.status !== 'connected' ? (
+            <p className="muted" style={{ marginTop: 10 }}>
+              Connect a wallet or start the local demo to continue.
+            </p>
+          ) : null}
+        </section>
+      </div>
+    </div>
+  );
 }

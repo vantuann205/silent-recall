@@ -20,7 +20,7 @@ export function Authorization() {
     <section className="notice">
       <LockKeyhole />
       <div style={{ width: '100%' }}>
-        <h3>Manufacturer authorization</h3>
+        <h2 style={{ fontSize: 17 }}>Manufacturer authorization</h2>
         <p>
           Connect your wallet and unlock the deployment-bound manufacturer
           authority.

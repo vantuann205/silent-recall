@@ -1,4 +1,16 @@
 import { defineConfig, globalIgnores } from 'eslint/config';
 import nextVitals from 'eslint-config-next/core-web-vitals';
 import nextTs from 'eslint-config-next/typescript';
-export default defineConfig([...nextVitals, ...nextTs, globalIgnores(['.next/**','contract/generated/**','public/zk/**','coverage/**','test-results/**','playwright-report/**','.local/**'])]);
+export default defineConfig([
+  ...nextVitals,
+  ...nextTs,
+  globalIgnores([
+    '.next/**',
+    'contract/generated/**',
+    'public/zk/**',
+    'coverage/**',
+    'test-results/**',
+    'playwright-report/**',
+    '.local/**',
+  ]),
+]);
