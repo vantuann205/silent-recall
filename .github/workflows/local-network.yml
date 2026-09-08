@@ -25,7 +25,7 @@ jobs:
       - run: pnpm contract:compile
       - run: docker compose up -d --wait
       - run: pnpm test:integration
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: success()
         with:
           name: public-proof-result
