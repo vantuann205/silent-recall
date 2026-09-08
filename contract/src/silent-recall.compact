@@ -1,0 +1,27 @@
+pragma language_version >= 0.23;
+import CompactStandardLibrary;
+
+export ledger authority: Bytes<32>;
+export ledger manufacturerId: Bytes<32>;
+export ledger initialized: Boolean;
+witness authoritySecret(): Bytes<32>;
+
+constructor(expectedAuthority: Bytes<32>, expectedManufacturer: Bytes<32>) {
+  assert(disclose(expectedAuthority) != default<Bytes<32>>, "SR_INVALID");
+  authority = disclose(expectedAuthority);
+  manufacturerId = disclose(expectedManufacturer);
+}
+
+export pure circuit authorityHash(secret: Bytes<32>): Bytes<32> {
+  return persistentHash<Vector<2, Bytes<32>>>([pad(32, "SILENT_RECALL_AUTH_V1"), secret]);
+}
+
+circuit requireAuthority(): [] {
+  assert(authorityHash(authoritySecret()) == authority, "SR_UNAUTHORIZED");
+}
+
+export circuit initializeManufacturer(): [] {
+  requireAuthority();
+  assert(!initialized, "SR_DUPLICATE");
+  initialized = true;
+}
