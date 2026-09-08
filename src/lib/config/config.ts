@@ -1,0 +1,4 @@
+import { z } from 'zod';
+const configuration = z.object({network:z.enum(['undeployed','preview','preprod']),contractAddress:z.string().regex(/^[0-9a-f]{64}$/).or(z.literal('')),indexerHttp:z.url(),indexerWs:z.url(),proofServer:z.url()});
+export function getConfig() {return configuration.parse({network:process.env.NEXT_PUBLIC_MIDNIGHT_NETWORK ?? 'undeployed',contractAddress:process.env.NEXT_PUBLIC_CONTRACT_ADDRESS ?? '',indexerHttp:process.env.NEXT_PUBLIC_INDEXER_HTTP ?? 'http://127.0.0.1:18088/api/v4/graphql',indexerWs:process.env.NEXT_PUBLIC_INDEXER_WS ?? 'ws://127.0.0.1:18088/api/v4/graphql/ws',proofServer:process.env.NEXT_PUBLIC_PROOF_SERVER ?? 'http://127.0.0.1:16300'});}
+export function demoAllowed() {return process.env.NODE_ENV !== 'production' && process.env.NEXT_PUBLIC_ENABLE_DEMO === 'true';}

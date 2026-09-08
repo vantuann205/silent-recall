@@ -1,0 +1,10 @@
+node_modules
+.next
+coverage
+contract/generated
+public/zk
+pnpm-lock.yaml
+test-results
+playwright-report
+.local
+*.compact
