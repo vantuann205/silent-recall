@@ -1,0 +1,9 @@
+SilentRecall
+Copyright 2026 Tuan Ngo and SilentRecall contributors.
+
+Licensed under the Apache License, Version 2.0.
+
+The local development wallet setup is adapted from
+midnightntwrk/create-mn-app, Copyright 2025 Midnight Foundation,
+also licensed under Apache-2.0. Original attribution is retained in LICENSE
+and scripts/local-wallet.ts. Dependencies retain their respective licenses.
