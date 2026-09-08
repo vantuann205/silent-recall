@@ -6,6 +6,23 @@ export ledger manufacturerId: Bytes<32>;
 export ledger initialized: Boolean;
 export ledger commitments: Set<Bytes<32>>;
 export ledger productCount: Counter;
+export struct RecallCampaign {
+  title: Opaque<"string">;
+  manufacturer: Bytes<32>;
+  model: Bytes<32>;
+  batch: Bytes<32>;
+  reason: Opaque<"string">;
+  opensAt: Uint<64>;
+  expiresAt: Uint<64>;
+  purchaseFrom: Uint<64>;
+  purchaseTo: Uint<64>;
+  warrantyRequired: Boolean;
+  voucherValue: Uint<32>;
+  active: Boolean;
+}
+export ledger campaigns: Map<Bytes<32>, RecallCampaign>;
+export ledger campaignCount: Counter;
+export ledger verificationCount: Counter;
 witness authoritySecret(): Bytes<32>;
 
 constructor(expectedAuthority: Bytes<32>, expectedManufacturer: Bytes<32>) {
@@ -35,4 +52,27 @@ export circuit registerProductCommitment(commitment: Bytes<32>): [] {
   assert(!commitments.member(disclose(commitment)), "SR_DUPLICATE");
   commitments.insert(disclose(commitment));
   productCount.increment(1);
+}
+
+export circuit createRecallCampaign(id: Bytes<32>, campaign: RecallCampaign): [] {
+  requireAuthority();
+  assert(initialized, "SR_UNAUTHORIZED");
+  const c = disclose(campaign);
+  assert(disclose(id) != default<Bytes<32>>, "SR_INVALID");
+  assert(!campaigns.member(disclose(id)), "SR_DUPLICATE");
+  assert(c.manufacturer == manufacturerId, "SR_MANUFACTURER");
+  assert(c.opensAt < c.expiresAt, "SR_INVALID");
+  assert(c.purchaseFrom <= c.purchaseTo, "SR_INVALID");
+  assert(c.active, "SR_INVALID");
+  assert(c.voucherValue <= 1000000, "SR_INVALID");
+  campaigns.insert(disclose(id), c);
+  campaignCount.increment(1);
+}
+
+export circuit closeRecallCampaign(id: Bytes<32>): [] {
+  requireAuthority();
+  assert(campaigns.member(disclose(id)), "SR_NOT_FOUND");
+  const c = campaigns.lookup(disclose(id));
+  assert(c.active, "SR_CLOSED");
+  campaigns.insert(disclose(id), RecallCampaign { ...c, active: false });
 }
