@@ -1,6 +1,7 @@
 import type { NextConfig } from 'next';
 import path from 'node:path';
 const config: NextConfig = {
+  devIndicators: false,
   webpack(config, { isServer }) {
     config.output.environment = {
       ...config.output.environment,

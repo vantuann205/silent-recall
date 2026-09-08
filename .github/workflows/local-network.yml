@@ -1,0 +1,34 @@
+name: Real Local Network Proof
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  proof:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Install Compact
+        run: |
+          curl --proto '=https' --tlsv1.2 -LsSf https://github.com/midnightntwrk/compact/releases/download/compact-v0.5.2/compact-installer.sh | sh
+          echo "$HOME/.compact/bin" >> "$GITHUB_PATH"
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+          export PATH="$HOME/.compact/bin:$HOME/.local/bin:$PATH"
+          compact update 0.31.1
+      - run: pnpm contract:compile
+      - run: docker compose up -d --wait
+      - run: pnpm test:integration
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: public-proof-result
+          path: .local/integration-result.json
+      - run: docker compose down
+        if: always()

@@ -1,0 +1,13 @@
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      midnight:
+        patterns: ['@midnight-ntwrk/*']
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly

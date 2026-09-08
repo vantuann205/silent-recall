@@ -49,9 +49,9 @@ try {
       timeout(300000),
     ),
   );
-  const zkConfigProvider = new NodeZkConfigProvider<
-    keyof LocalCircuits
-  >('contract/generated');
+  const zkConfigProvider = new NodeZkConfigProvider<keyof LocalCircuits>(
+    'contract/generated',
+  );
   const providers: Providers = {
     privateStateProvider: memoryPrivateState(),
     publicDataProvider: indexerPublicDataProvider(
@@ -167,6 +167,7 @@ try {
   clearTimeout(overall);
   await ctx.wallet.stop();
 }
-type LocalCircuits = import('../contract/generated/contract/index.js').ProvableCircuits<
-  import('../src/lib/midnight/private-state').PrivateState
->;
+type LocalCircuits =
+  import('../contract/generated/contract/index.js').ProvableCircuits<
+    import('../src/lib/midnight/private-state').PrivateState
+  >;

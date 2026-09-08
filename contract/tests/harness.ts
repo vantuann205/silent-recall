@@ -1,5 +1,52 @@
-import {Contract,pureCircuits,type ProductOpening} from '../generated/contract/index.js';
-import {CostModel,QueryContext,sampleContractAddress,createConstructorContext} from '@midnight-ntwrk/compact-runtime';
-export const authoritySecret=new Uint8Array(32).fill(7);
-export const openingFixture:ProductOpening={manufacturer:new Uint8Array(32).fill(1),model:new Uint8Array(32).fill(2),batch:new Uint8Array(32).fill(3),serial:new Uint8Array(32).fill(4),purchaseDate:50n,warranty:true,secret:new Uint8Array(32).fill(9),salt:new Uint8Array(32).fill(10)};
-export function authorityHarness(){const contract=new Contract<{secret:Uint8Array;opening?:ProductOpening}>({authoritySecret:({privateState})=>[privateState,privateState.secret],credentialOpening:({privateState})=>[privateState,privateState.opening??openingFixture]});const initial=contract.initialState(createConstructorContext({secret:authoritySecret.slice()},'0'.repeat(64)),pureCircuits.authorityHash(authoritySecret),new Uint8Array(32).fill(1));const context={currentPrivateState:initial.currentPrivateState,currentZswapLocalState:initial.currentZswapLocalState,costModel:CostModel.initialCostModel(),currentQueryContext:new QueryContext(initial.currentContractState.data,sampleContractAddress())};return{contract,context};}
+import {
+  Contract,
+  pureCircuits,
+  type ProductOpening,
+} from '../generated/contract/index.js';
+import {
+  CostModel,
+  QueryContext,
+  sampleContractAddress,
+  createConstructorContext,
+} from '@midnight-ntwrk/compact-runtime';
+export const authoritySecret = new Uint8Array(32).fill(7);
+export const openingFixture: ProductOpening = {
+  manufacturer: new Uint8Array(32).fill(1),
+  model: new Uint8Array(32).fill(2),
+  batch: new Uint8Array(32).fill(3),
+  serial: new Uint8Array(32).fill(4),
+  purchaseDate: 50n,
+  warranty: true,
+  secret: new Uint8Array(32).fill(9),
+  salt: new Uint8Array(32).fill(10),
+};
+export function authorityHarness() {
+  const contract = new Contract<{
+    secret: Uint8Array;
+    opening?: ProductOpening;
+  }>({
+    authoritySecret: ({ privateState }) => [privateState, privateState.secret],
+    credentialOpening: ({ privateState }) => [
+      privateState,
+      privateState.opening ?? openingFixture,
+    ],
+  });
+  const initial = contract.initialState(
+    createConstructorContext(
+      { secret: authoritySecret.slice() },
+      '0'.repeat(64),
+    ),
+    pureCircuits.authorityHash(authoritySecret),
+    new Uint8Array(32).fill(1),
+  );
+  const context = {
+    currentPrivateState: initial.currentPrivateState,
+    currentZswapLocalState: initial.currentZswapLocalState,
+    costModel: CostModel.initialCostModel(),
+    currentQueryContext: new QueryContext(
+      initial.currentContractState.data,
+      sampleContractAddress(),
+    ),
+  };
+  return { contract, context };
+}

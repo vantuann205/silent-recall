@@ -28,19 +28,15 @@ beforeEach(() => {
 });
 function api() {
   return {
-    getConfiguration: vi
-      .fn()
-      .mockResolvedValue({
-        networkId: 'undeployed',
-        indexerUri: 'http://localhost',
-        indexerWsUri: 'ws://localhost',
-      }),
-    getShieldedAddresses: vi
-      .fn()
-      .mockResolvedValue({
-        shieldedCoinPublicKey: 'coin',
-        shieldedEncryptionPublicKey: 'enc',
-      }),
+    getConfiguration: vi.fn().mockResolvedValue({
+      networkId: 'undeployed',
+      indexerUri: 'http://localhost',
+      indexerWsUri: 'ws://localhost',
+    }),
+    getShieldedAddresses: vi.fn().mockResolvedValue({
+      shieldedCoinPublicKey: 'coin',
+      shieldedEncryptionPublicKey: 'enc',
+    }),
     getProvingProvider: vi.fn().mockResolvedValue('prover'),
     balanceUnsealedTransaction: vi.fn().mockResolvedValue({ tx: 'abcd' }),
     submitTransaction: vi.fn().mockResolvedValue(undefined),
