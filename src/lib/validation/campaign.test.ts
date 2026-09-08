@@ -1,0 +1,6 @@
+import {expect,it} from 'vitest';
+import {campaignSchema,campaignStatus,dateSeconds} from './campaign';
+export const campaignFixture={id:'RECALL-001',title:'Kettle safety recall',manufacturerId:'ACME',modelId:'KETTLE-01',batchId:'BATCH-2026',reason:'Potential overheating hazard.',opensAt:100,expiresAt:200,purchaseFrom:0,purchaseTo:100,warrantyRequired:true,voucherValue:50,active:true};
+it('rejects reversed, equal campaign times and reversed purchase bounds',()=>{const {active,...input}=campaignFixture;expect(active).toBe(true);expect(campaignSchema.parse(input)).toEqual(input);for(const patch of [{expiresAt:100},{expiresAt:99},{purchaseFrom:101},{voucherValue:-1},{extra:1}])expect(()=>campaignSchema.parse({...input,...patch})).toThrow();});
+it('opening inclusive, expiration exclusive, close wins',()=>{expect(campaignStatus(campaignFixture,99)).toBe('Scheduled');expect(campaignStatus(campaignFixture,100)).toBe('Active');expect(campaignStatus(campaignFixture,200)).toBe('Expired');expect(campaignStatus({...campaignFixture,active:false},99)).toBe('Closed');});
+it('converts timestamps to seconds and rejects invalid dates',()=>{expect(dateSeconds('1970-01-01T00:00:01Z')).toBe(1);expect(()=>dateSeconds('nonsense')).toThrow();});
