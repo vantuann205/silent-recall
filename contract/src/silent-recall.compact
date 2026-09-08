@@ -24,6 +24,17 @@ export ledger campaigns: Map<Bytes<32>, RecallCampaign>;
 export ledger campaignCount: Counter;
 export ledger verificationCount: Counter;
 witness authoritySecret(): Bytes<32>;
+export struct ProductOpening {
+  manufacturer: Bytes<32>;
+  model: Bytes<32>;
+  batch: Bytes<32>;
+  serial: Bytes<32>;
+  purchaseDate: Uint<64>;
+  warranty: Boolean;
+  secret: Bytes<32>;
+  salt: Bytes<32>;
+}
+witness credentialOpening(): ProductOpening;
 
 constructor(expectedAuthority: Bytes<32>, expectedManufacturer: Bytes<32>) {
   assert(disclose(expectedAuthority) != default<Bytes<32>>, "SR_INVALID");
@@ -75,4 +86,28 @@ export circuit closeRecallCampaign(id: Bytes<32>): [] {
   const c = campaigns.lookup(disclose(id));
   assert(c.active, "SR_CLOSED");
   campaigns.insert(disclose(id), RecallCampaign { ...c, active: false });
+}
+
+export pure circuit productCommitment(p: ProductOpening): Bytes<32> {
+  return persistentHash<Vector<9, Bytes<32>>>([
+    pad(32, "SILENT_RECALL_PRODUCT_V1"), p.manufacturer, p.model, p.batch,
+    p.serial, p.purchaseDate as Bytes<32>, (p.warranty as Uint<8>) as Bytes<32>,
+    p.secret, p.salt
+  ]);
+}
+
+export circuit proveRecallEligibility(id: Bytes<32>): [] {
+  assert(campaigns.member(disclose(id)), "SR_NOT_FOUND");
+  const c = campaigns.lookup(disclose(id));
+  assert(c.active, "SR_CLOSED");
+  assert(blockTimeGte(c.opensAt), "SR_SCHEDULED");
+  assert(blockTimeLt(c.expiresAt), "SR_EXPIRED");
+  const p = credentialOpening();
+  assert(p.manufacturer == c.manufacturer, "SR_MANUFACTURER");
+  assert(p.model == c.model, "SR_MODEL");
+  assert(p.batch == c.batch, "SR_BATCH");
+  assert(!c.warrantyRequired || p.warranty, "SR_WARRANTY");
+  assert(p.purchaseDate >= c.purchaseFrom && p.purchaseDate <= c.purchaseTo, "SR_PURCHASE");
+  assert(commitments.member(disclose(productCommitment(p))), "SR_UNREGISTERED");
+  verificationCount.increment(1);
 }
