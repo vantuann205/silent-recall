@@ -1,0 +1,8 @@
+'use client';
+import {useState} from 'react';
+import {LockKeyhole,Upload,Trash2} from 'lucide-react';
+import {useRecall} from '@/providers/recall-provider';
+import {importCredential,safeSummary} from '@/lib/validation/credential';
+import {Button} from '@/components/ui/button';
+import {FormError} from '@/components/shared/form';
+export function CredentialImport(){const r=useRecall();const [error,setError]=useState('');const [busy,setBusy]=useState(false);return <section className="credential-box"><LockKeyhole size={26}/><h2>Your private credential</h2>{r.credential?<><span className="badge">Credential v1 / imported</span><dl>{Object.entries(safeSummary(r.credential)).map(([label,value])=><div className="keyline" key={label}><dt>{label==='serial'?'Serial':label==='warrantyEligible'?'Warranty':label.replace('Id','')}</dt><dd>{String(value)}</dd></div>)}</dl><Button variant="outline" style={{marginTop:20}} onClick={()=>r.setCredential(null)}><Trash2/>Forget credential</Button></>:<div className="field"><label htmlFor="credential-file"><Upload size={18}/>Import credential JSON</label><input id="credential-file" type="file" accept=".json,application/json" disabled={busy} onChange={async e=>{setError('');const input=e.currentTarget;const file=input.files?.[0];if(!file)return;setBusy(true);try{if(file.size>16384)throw new Error();r.setCredential(importCredential(await file.text()));r.notify('Credential imported locally.');}catch{r.setCredential(null);setError('Invalid credential. Use a valid version 1 JSON file, up to 16 KB.');}finally{input.value='';setBusy(false);}}}/><small>{busy?'Validating locally...':'Your file stays on this device. It is never uploaded to the application server.'}</small></div>}<FormError>{error}</FormError></section>;}
