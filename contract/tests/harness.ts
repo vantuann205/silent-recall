@@ -1,0 +1,4 @@
+import {Contract,pureCircuits} from '../generated/contract/index.js';
+import {CostModel,QueryContext,sampleContractAddress,createConstructorContext} from '@midnight-ntwrk/compact-runtime';
+export const authoritySecret=new Uint8Array(32).fill(7);
+export function authorityHarness(){const contract=new Contract<{secret:Uint8Array}>({authoritySecret:({privateState})=>[privateState,privateState.secret]});const initial=contract.initialState(createConstructorContext({secret:authoritySecret.slice()},'0'.repeat(64)),pureCircuits.authorityHash(authoritySecret),new Uint8Array(32).fill(1));const context={currentPrivateState:initial.currentPrivateState,currentZswapLocalState:initial.currentZswapLocalState,costModel:CostModel.initialCostModel(),currentQueryContext:new QueryContext(initial.currentContractState.data,sampleContractAddress())};return{contract,context};}

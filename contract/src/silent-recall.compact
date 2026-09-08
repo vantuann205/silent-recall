@@ -4,6 +4,8 @@ import CompactStandardLibrary;
 export ledger authority: Bytes<32>;
 export ledger manufacturerId: Bytes<32>;
 export ledger initialized: Boolean;
+export ledger commitments: Set<Bytes<32>>;
+export ledger productCount: Counter;
 witness authoritySecret(): Bytes<32>;
 
 constructor(expectedAuthority: Bytes<32>, expectedManufacturer: Bytes<32>) {
@@ -24,4 +26,13 @@ export circuit initializeManufacturer(): [] {
   requireAuthority();
   assert(!initialized, "SR_DUPLICATE");
   initialized = true;
+}
+
+export circuit registerProductCommitment(commitment: Bytes<32>): [] {
+  requireAuthority();
+  assert(initialized, "SR_UNAUTHORIZED");
+  assert(disclose(commitment) != default<Bytes<32>>, "SR_INVALID");
+  assert(!commitments.member(disclose(commitment)), "SR_DUPLICATE");
+  commitments.insert(disclose(commitment));
+  productCount.increment(1);
 }
