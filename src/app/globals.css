@@ -137,9 +137,28 @@ h3 {
   gap: 25px;
   font-size: 14px;
 }
+.nav a {
+  position: relative;
+  padding-block: 6px;
+  transition: color 160ms ease;
+}
+.nav a::after {
+  content: '';
+  position: absolute;
+  inset: auto 0 0;
+  height: 2px;
+  background: var(--primary);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 180ms ease;
+}
+.nav a:hover::after,
+.nav a:focus-visible::after,
+.nav a[aria-current='page']::after {
+  transform: scaleX(1);
+}
 .nav a[aria-current='page'] {
   color: var(--primary);
-  box-shadow: 0 2px var(--primary);
 }
 .wallet {
   margin-left: auto;
@@ -204,6 +223,7 @@ h3 {
   border: none;
 }
 .stat strong {
+  font-variant-numeric: tabular-nums;
   display: block;
   font-size: 42px;
   line-height: 1.3;
@@ -556,6 +576,82 @@ td small {
 }
 .spin {
   animation: spin 1s linear infinite;
+}
+main > .wrap,
+.hero-content,
+.proof-result,
+.toast {
+  animation: enter 280ms ease-out;
+}
+.proof-result > svg {
+  animation: confirm 360ms ease-out;
+}
+.progress-steps span {
+  animation: pulse 1400ms ease-in-out infinite;
+}
+.progress-steps span:nth-child(2) {
+  animation-delay: 160ms;
+}
+.progress-steps span:nth-child(3) {
+  animation-delay: 320ms;
+}
+.field input,
+.field select,
+.field textarea {
+  transition:
+    border-color 160ms ease,
+    box-shadow 160ms ease;
+}
+.field :is(input, select, textarea):focus-visible {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px #12664f18;
+}
+.campaign-table tbody tr {
+  transition: background-color 160ms ease;
+}
+.campaign-table tbody tr:focus-within {
+  background: #edf5f0;
+}
+.row-action {
+  display: inline-flex;
+  width: 44px;
+  height: 44px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  color: var(--primary);
+}
+.row-action svg {
+  transition: transform 160ms ease;
+}
+@media (hover: hover) {
+  .campaign-table tbody tr:hover {
+    background: #f5f8f6;
+  }
+  .row-action:hover svg {
+    transform: translate(2px, -2px);
+  }
+}
+@keyframes enter {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes confirm {
+  from {
+    opacity: 0;
+    transform: scale(0.88);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 @keyframes spin {
   to {

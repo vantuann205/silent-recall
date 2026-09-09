@@ -38,7 +38,7 @@ export function CampaignList({
       </div>
       {campaigns.length ? (
         <div className="table-scroll">
-          <table>
+          <table className="campaign-table">
             <thead>
               <tr>
                 <th>Campaign</th>
@@ -70,6 +70,8 @@ export function CampaignList({
                   </td>
                   <td>
                     <Link
+                      className="row-action"
+                      title={(customer ? 'Check ' : 'View ') + c.title}
                       aria-label={(customer ? 'Check ' : 'View ') + c.title}
                       href={
                         customer

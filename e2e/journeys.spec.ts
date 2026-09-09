@@ -1,6 +1,32 @@
 import { test, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 import { startDemo, issue, createCampaign, customer } from './helpers';
+
+test('motion respects system preference without hiding page content', async ({
+  page,
+}) => {
+  await page.emulateMedia({ reducedMotion: 'no-preference' });
+  await page.goto('/manufacturer');
+  await expect(page.locator('main > .wrap')).toHaveCSS(
+    'animation-name',
+    'enter',
+  );
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await expect(page.locator('main > .wrap')).toHaveCSS(
+    'animation-name',
+    'none',
+  );
+  await expect(
+    page.getByRole('heading', { name: 'Manufacturer workspace' }),
+  ).toBeVisible();
+  const link = page.getByRole('link', { name: 'Customer', exact: true });
+  await link.focus();
+  await expect(link).toBeFocused();
+  await link.press('Enter');
+  await expect(
+    page.getByRole('heading', { name: 'Customer workspace' }),
+  ).toBeVisible();
+});
 test('landing and wallet missing recovery', async ({ page }) => {
   await page.goto('/');
   await expect(
