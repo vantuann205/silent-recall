@@ -46,6 +46,8 @@ it('runs a memory-only demo session with authorization, notices and reconnect', 
   await screen.findByText('authorized');
   fireEvent.click(screen.getByText('Notify'));
   expect(screen.getByRole('status')).toHaveTextContent('Saved');
+  fireEvent.click(screen.getByRole('button', { name: 'Dismiss notification' }));
+  expect(screen.queryByRole('status')).not.toBeInTheDocument();
   fireEvent.click(screen.getByText('Disconnect'));
   await waitFor(() => expect(screen.getByText('disconnected')).toBeVisible());
   expect(screen.getByText('locked')).toBeVisible();

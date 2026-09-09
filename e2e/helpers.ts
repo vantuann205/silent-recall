@@ -60,4 +60,7 @@ export async function customer(page: Page, buffer: Buffer) {
     buffer,
   });
   await page.getByRole('link', { name: 'Check Kettle safety recall' }).click();
+  await expect(
+    page.getByRole('heading', { name: 'Check recall eligibility' }),
+  ).toBeVisible();
 }

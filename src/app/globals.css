@@ -425,6 +425,41 @@ td small {
   font-size: 20px;
   margin-bottom: 14px;
 }
+.credential-model {
+  margin-top: 18px;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+.credential-details {
+  margin-top: 12px;
+  border-block: 1px solid var(--border);
+}
+.credential-details summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-height: 44px;
+  cursor: pointer;
+  font-size: 13px;
+  color: var(--muted-foreground);
+  list-style: none;
+}
+.credential-details summary::-webkit-details-marker {
+  display: none;
+}
+.credential-details summary:focus-visible {
+  outline: 3px solid var(--primary);
+  outline-offset: 3px;
+}
+.credential-details summary svg {
+  transition: transform 160ms ease;
+}
+.credential-details[open] summary svg {
+  transform: rotate(180deg);
+}
+.credential-details .keyline:last-child {
+  border-bottom: 0;
+}
 .proof-panel {
   max-width: 760px;
   margin: auto;
@@ -555,6 +590,9 @@ td small {
   top: 10px;
 }
 .toast {
+  display: flex;
+  align-items: center;
+  gap: 12px;
   position: fixed;
   bottom: 24px;
   right: 24px;
@@ -562,8 +600,28 @@ td small {
   max-width: calc(100% - 48px);
   background: #172923;
   color: white;
-  padding: 14px 20px;
+  padding: 8px 8px 8px 16px;
   border-radius: 4px;
+  box-shadow: 0 6px 24px #18222620;
+}
+.toast span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.toast-dismiss {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  border-radius: 4px;
+}
+.toast-dismiss:hover {
+  background: #ffffff18;
+}
+.toast-dismiss:focus-visible {
+  outline-color: white;
+  outline-offset: -4px;
 }
 .error-text {
   color: #a32017;

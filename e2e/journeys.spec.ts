@@ -52,6 +52,14 @@ test('issue download publish import and verify with privacy boundaries', async (
   expect(credential.productSecret).toHaveLength(64);
   await createCampaign(page);
   await customer(page, buffer);
+  const details = page.locator('.credential-details');
+  await expect(details).not.toHaveAttribute('open');
+  await details.locator('summary').focus();
+  await page.keyboard.press('Enter');
+  await expect(details).toHaveAttribute('open', '');
+  await expect(details.getByText('[private]', { exact: true })).toBeVisible();
+  await page.keyboard.press('Enter');
+  await expect(details).not.toHaveAttribute('open');
   await page
     .getByRole('button', { name: 'Verify eligibility', exact: true })
     .click();

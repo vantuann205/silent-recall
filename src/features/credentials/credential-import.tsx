@@ -1,6 +1,6 @@
 'use client';
 import { useState } from 'react';
-import { LockKeyhole, Upload, Trash2 } from 'lucide-react';
+import { LockKeyhole, Upload, Trash2, ChevronDown } from 'lucide-react';
 import { useRecall } from '@/providers/recall-provider';
 import { importCredential, safeSummary } from '@/lib/validation/credential';
 import { Button } from '@/components/ui/button';
@@ -16,20 +16,39 @@ export function CredentialImport() {
       {r.credential ? (
         <>
           <span className="badge">Credential v1 / imported</span>
-          <dl>
-            {Object.entries(safeSummary(r.credential)).map(([label, value]) => (
-              <div className="keyline" key={label}>
-                <dt>
-                  {label === 'serial'
-                    ? 'Serial'
-                    : label === 'warrantyEligible'
-                      ? 'Warranty'
-                      : label.replace('Id', '')}
-                </dt>
-                <dd>{String(value)}</dd>
-              </div>
-            ))}
-          </dl>
+          <p className="credential-model">{r.credential.modelId}</p>
+          <details className="credential-details">
+            <summary>
+              Product details
+              <ChevronDown size={18} />
+            </summary>
+            <dl>
+              {Object.entries(safeSummary(r.credential)).map(
+                ([label, value]) => (
+                  <div className="keyline" key={label}>
+                    <dt>
+                      {label === 'serial'
+                        ? 'Serial'
+                        : label === 'warrantyEligible'
+                          ? 'Warranty'
+                          : label === 'manufacturerId'
+                            ? 'Manufacturer'
+                            : label === 'modelId'
+                              ? 'Model'
+                              : 'Batch'}
+                    </dt>
+                    <dd>
+                      {typeof value === 'boolean'
+                        ? value
+                          ? 'Yes'
+                          : 'No'
+                        : String(value)}
+                    </dd>
+                  </div>
+                ),
+              )}
+            </dl>
+          </details>
           <Button
             variant="outline"
             style={{ marginTop: 20 }}

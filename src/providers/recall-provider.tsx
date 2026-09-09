@@ -22,6 +22,7 @@ import {
   mapWalletStatus,
 } from '@/features/wallet/connect';
 import { safeError, RecallError } from '@/lib/midnight/errors';
+import { CheckCircle2, X } from 'lucide-react';
 const empty: PublicSnapshot = {
   manufacturerId: '',
   authority: '',
@@ -196,7 +197,17 @@ function SessionProvider({ children }: { children: ReactNode }) {
       {children}
       {toast ? (
         <div className="toast" role="status">
-          {toast}
+          <CheckCircle2 size={20} aria-hidden="true" />
+          <span>{toast}</span>
+          <button
+            type="button"
+            className="toast-dismiss"
+            aria-label="Dismiss notification"
+            title="Dismiss notification"
+            onClick={() => setToast('')}
+          >
+            <X size={18} />
+          </button>
         </div>
       ) : null}
     </Context.Provider>
