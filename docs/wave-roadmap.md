@@ -12,4 +12,4 @@
 
 **0% implemented.** Revocation, private ownership transfer, anonymous notifications, selective auditor disclosure and repair-center workflows are future work.
 
-Wave 1 complete — 30% of the full SilentRecall roadmap. This is not a production-ready compensation system.
+Progress is tracked independently: Wave 1 is complete and receiving UI improvements; Wave 2 and Wave 3 remain at 0%. This is not a production-ready compensation system.

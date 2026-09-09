@@ -10,7 +10,7 @@
 
 Recalls should not require publishing a customer's identity, receipt or product serial. SilentRecall lets a product owner prove that a manufacturer-registered private credential satisfies a public recall's conditions.
 
-**Wave 1 complete — 30% of the full SilentRecall roadmap.** Wave 2 and Wave 3 are not implemented. This is experimental software, not an audited compensation system. See [verification evidence](docs/testing.md).
+**Wave 1 complete, with ongoing UI improvements.** Progress is tracked independently for each wave; Wave 2 and Wave 3 have not started. This is experimental software, not an audited compensation system. See [verification evidence](docs/testing.md).
 
 ![Manufacturer workspace](docs/assets/manufacturer-desktop.png)
 ![Private eligibility result](docs/assets/eligible-desktop.png)

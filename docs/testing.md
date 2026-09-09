@@ -7,20 +7,20 @@
 | 26 Compact circuit tests  | Generated contract authority, registration, campaign transitions, private predicates and time boundaries           |
 | TypeScript / React tests  | Strict schemas, entropy/encoding/masking, public projections, witness cleanup, wallet v4, forms and session states |
 | Real local-network runner | Actual deployment, proof generation, transaction balancing/submission, indexer confirmation and rejection paths    |
-| 18 Playwright tests       | Six independent journeys on Chromium, Pixel 7 mobile Chrome and Firefox, including axe scans                       |
+| 21 Playwright tests       | Seven independent journeys on Chromium, Pixel 7 mobile Chrome and Firefox, including axe scans                     |
 
 There are **67 passing Vitest tests across 16 files**, including the 26 contract tests. No skipped or exclusive tests are committed. Playwright uses the compiled-contract development gateway, not a network wallet; **Playwright itself does not validate ZK cryptography**.
 
 ## Coverage
 
-Measured with Vitest V8 on 8 September 2026:
+Measured with Vitest V8 on 9 September 2026:
 
 | Metric                                                  | Result     |
 | ------------------------------------------------------- | ---------- |
-| Overall lines                                           | 87.46%     |
-| Statements                                              | 86.27%     |
-| Functions                                               | 88.46%     |
-| Branches                                                | 77.06%     |
+| Overall lines                                           | 87.50%     |
+| Statements                                              | 86.31%     |
+| Functions                                               | 88.54%     |
+| Branches                                                | 77.53%     |
 | Domain validation and cryptographic utilities           | 100% lines |
 | Real contract gateway, private state and public mapping | 100% lines |
 | Wallet connector and provider adapter                   | 100% lines |
@@ -56,7 +56,9 @@ Its checks: deployment, authority initialization, commitment registration, index
 
 ## Browser and Visual Evidence
 
-All 18 tests passed locally without retries. Each browser context starts from an independent in-memory contract. One worker avoids concurrent on-demand Next.js compilation resetting another test's development session. Do not edit source while running browser tests. Failure traces, videos and screenshots go to ignored artifact directories.
+All 21 tests passed locally without retries. Each browser context starts from an independent in-memory contract. One worker avoids concurrent on-demand Next.js compilation resetting another test's development session. Do not edit source while running browser tests. Failure traces, videos and screenshots go to ignored artifact directories.
+
+The Wave 1 UI refinement checks cover reduced-motion preferences, keyboard-operated credential details and dismissible notifications. Browser automation uses the installed Playwright runner because the Browser plugin is unavailable. Contract code is unchanged; recorded proof evidence remains from 8 September rather than a new network run.
 
 Major-page axe scans include overview, manufacturer, customer, privacy and docs. Layout checks include 320px width. The critical issuance/import/proof/close journeys run on desktop and mobile. Privacy assertions verify no serial/secret/salt in rendered text, URLs or console output, and no localStorage/sessionStorage credential persistence.
 
