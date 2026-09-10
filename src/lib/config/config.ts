@@ -10,15 +10,21 @@ const configuration = z.object({
   proofServer: z.url(),
 });
 export function getConfig() {
+  const network = process.env.NEXT_PUBLIC_MIDNIGHT_NETWORK ?? 'undeployed';
+  const publicNetwork = network === 'preprod' || network === 'preview';
   return configuration.parse({
-    network: process.env.NEXT_PUBLIC_MIDNIGHT_NETWORK ?? 'undeployed',
+    network,
     contractAddress: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS ?? '',
     indexerHttp:
       process.env.NEXT_PUBLIC_INDEXER_HTTP ??
-      'http://127.0.0.1:18088/api/v4/graphql',
+      (publicNetwork
+        ? `https://indexer.${network}.midnight.network/api/v4/graphql`
+        : 'http://127.0.0.1:18088/api/v4/graphql'),
     indexerWs:
       process.env.NEXT_PUBLIC_INDEXER_WS ??
-      'ws://127.0.0.1:18088/api/v4/graphql/ws',
+      (publicNetwork
+        ? `wss://indexer.${network}.midnight.network/api/v4/graphql/ws`
+        : 'ws://127.0.0.1:18088/api/v4/graphql/ws'),
     proofServer:
       process.env.NEXT_PUBLIC_PROOF_SERVER ?? 'http://127.0.0.1:16300',
   });
