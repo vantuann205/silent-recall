@@ -8,7 +8,6 @@ node_modules
 coverage
 playwright-report
 test-results
-docs
 e2e
 tests
 contract/generated
