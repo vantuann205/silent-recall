@@ -7,13 +7,20 @@ import {
   fireEvent,
   waitFor,
   cleanup,
+  act,
 } from '@testing-library/react';
 import '@testing-library/jest-dom/vitest';
 import { RecallProvider, useRecall } from './recall-provider';
 import { DEMO_AUTHORITY } from '@/lib/midnight/demo-gateway';
+vi.mock('@/features/wallet/providers', () => ({
+  walletGateway: vi
+    .fn()
+    .mockRejectedValue(new Error('CONTRACT_NOT_CONFIGURED')),
+}));
 afterEach(() => {
   cleanup();
   vi.unstubAllEnvs();
+  vi.unstubAllGlobals();
 });
 function Probe() {
   const r = useRecall();
@@ -69,3 +76,35 @@ it('reports missing wallet and guards the context boundary', async () => {
   cleanup();
   expect(() => render(<Probe />)).toThrow('Recall provider is missing');
 });
+
+it('does not become connected after contract setup fails and wallet polling elapses', async () => {
+  vi.stubEnv('NEXT_PUBLIC_CONTRACT_ADDRESS', '');
+  vi.stubEnv('NEXT_PUBLIC_MIDNIGHT_NETWORK', 'preprod');
+  const getConnectionStatus = vi.fn().mockResolvedValue({
+    status: 'connected',
+    networkId: 'preprod',
+  });
+  vi.stubGlobal('midnight', {
+    mnLace: {
+      apiVersion: '4.0.1',
+      connect: vi.fn().mockResolvedValue({ getConnectionStatus }),
+    },
+  });
+  render(
+    <RecallProvider>
+      <Probe />
+    </RecallProvider>,
+  );
+  fireEvent.click(screen.getByText('Connect'));
+  await screen.findByText(
+    'The contract deployment address has not been configured.',
+  );
+  expect(screen.getByText('error', { exact: true })).toBeVisible();
+  await act(async () => {
+    await new Promise((resolve) => setTimeout(resolve, 5200));
+  });
+  expect(
+    screen.queryByText('connected', { exact: true }),
+  ).not.toBeInTheDocument();
+  expect(screen.getByText('error', { exact: true })).toBeVisible();
+}, 15000);

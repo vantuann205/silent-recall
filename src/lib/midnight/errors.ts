@@ -15,6 +15,8 @@ export const messages = {
   UNAVAILABLE:
     'Network or proof service is unavailable. Retry when the connection returns.',
   INVALID: 'The submitted data is invalid.',
+  UNKNOWN:
+    'The operation failed. Check the wallet request and contract configuration before retrying.',
 } as const;
 export type ErrorCode = keyof typeof messages;
 export class RecallError extends Error {
@@ -27,5 +29,5 @@ export function safeError(error: unknown) {
   const text = error instanceof Error ? error.message : '';
   for (const code of Object.keys(messages) as ErrorCode[])
     if (text.includes(`SR_${code}`)) return messages[code];
-  return messages.UNAVAILABLE;
+  return messages.UNKNOWN;
 }

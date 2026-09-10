@@ -104,11 +104,15 @@ function SessionProvider({ children }: { children: ReactNode }) {
         return;
       }
       const api = await connectWallet();
-      setApi(api);
       const { walletGateway } = await import('@/features/wallet/providers');
       setGateway(await walletGateway(api));
+      setApi(api);
       setStatus('connected');
     } catch (e) {
+      setApi(null);
+      setGateway(null);
+      setAuthorized(false);
+      setCredential(null);
       const message = e instanceof Error ? e.message : '';
       setStatus(
         message === 'WALLET_MISSING'
