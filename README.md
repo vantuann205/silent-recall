@@ -124,6 +124,13 @@ Open [localhost:3000](http://127.0.0.1:3000). For another port: `pnpm dev --port
 
 Production: `pnpm build` then `pnpm start`. Simulation is unavailable in production. Serve the generated `public/zk` assets with the build.
 
+### Vercel
+
+The repository includes a pinned Vercel build that compiles the contract and ZK
+assets before building Next.js. It defaults to Preprod with simulation disabled.
+See [Vercel deployment](docs/vercel.md) for configuration and deployment commands.
+Hosting the frontend does not deploy the contract or provide a proof server.
+
 Stop only this project's local services with `docker compose down`. This local network is disposable; restarting it can invalidate old addresses. Never use its public seed or development passwords on a funded public network.
 
 ## Verification
@@ -166,7 +173,7 @@ One app, no traditional API backend or database. Chain state is public; private 
 
 SilentRecall cannot independently prove that a physical product exists. Wave 1 trusts the manufacturer's issuance and commitment-registration process. JSON backups are unencrypted bearer secrets. Replays are allowed; counts are not unique customers. A compromised frontend, device or wallet can expose secrets. No independent audit has been performed.
 
-Wave 2 (one product, one claim) and Wave 3 (private recall network) remain **0% implemented**. Public preview deployment and an interactive funded Lace session require suitable external infrastructure; the reproducible deployment here is the local `undeployed` network. See [roadmap](docs/wave-roadmap.md).
+Wave 2 (one product, one claim) and Wave 3 (private recall network) remain **0% implemented**. Vercel hosts the frontend only; Preprod contract deployment and an interactive funded Lace session still require suitable external infrastructure. The verified contract deployment is on the local `undeployed` network. See [roadmap](docs/wave-roadmap.md).
 
 ## Contributing and License
 
