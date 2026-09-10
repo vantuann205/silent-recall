@@ -1,0 +1,26 @@
+# Never upload workstation data, credentials or generated build output.
+.git
+.github
+.local
+.next
+.vercel
+node_modules
+coverage
+playwright-report
+test-results
+docs
+e2e
+tests
+contract/generated
+contract/tests
+public/zk
+scripts/*.ts
+.env*
+*.tsbuildinfo
+**/.env*
+**/.local/**
+**/*.key
+**/*.dpapi
+**/*.mnemonic.txt
+**/*.credential.json
+**/*.log
