@@ -7,3 +7,10 @@ This version has breaking changes — APIs, conventions, and file structure may 
 This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
 
 <!-- END:nextjs-agent-rules -->
+
+## Preprod Wallet Continuity
+
+Read `docs/preprod-wallets.md` before wallet work. Existing 30-wallet encrypted
+inventory: `.local/wallets/preprod/wallets.dpapi`; wallet `01` is primary.
+Use `pnpm exec tsx scripts/wallet-vault.ts verify` to check it without revealing
+secrets. Never regenerate this inventory, commit it, or print decrypted contents.
