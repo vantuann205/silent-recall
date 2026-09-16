@@ -23,6 +23,10 @@ function decodeHex(value: string) {
 export async function walletGateway(api: ConnectedAPI) {
   const config = getConfig();
   if (!config.contractAddress) throw new Error('CONTRACT_NOT_CONFIGURED');
+  return contractGateway(await walletProviders(api), config.contractAddress);
+}
+export async function walletProviders(api: ConnectedAPI) {
+  const config = getConfig();
   const [settings, keys] = await Promise.all([
     api.getConfiguration(),
     api.getShieldedAddresses(),
@@ -65,5 +69,5 @@ export async function walletGateway(api: ConnectedAPI) {
       },
     },
   };
-  return contractGateway(providers, config.contractAddress);
+  return providers;
 }

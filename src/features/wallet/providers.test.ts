@@ -21,7 +21,7 @@ vi.mock('@midnight-ntwrk/midnight-js-protocol/ledger', () => ({
   Transaction: { deserialize: mocks.deserialize },
   CostModel: { initialCostModel: () => ({}) },
 }));
-import { walletGateway } from './providers';
+import { walletGateway, walletProviders } from './providers';
 beforeEach(() => {
   vi.clearAllMocks();
   vi.stubEnv('NEXT_PUBLIC_CONTRACT_ADDRESS', 'ab'.repeat(32));
@@ -84,5 +84,23 @@ it('proves, balances and submits using connector v4 and rejects malformed transa
   a.balanceUnsealedTransaction.mockResolvedValue({ tx: 'bad-hex' });
   await expect(p.walletProvider.balanceTx(tx as never)).rejects.toThrow(
     'Invalid transaction encoding',
+  );
+});
+it('allows deployment providers before an address exists without bypassing network validation', async () => {
+  vi.stubEnv('NEXT_PUBLIC_CONTRACT_ADDRESS', '');
+  const a = api();
+  expect(
+    (
+      await walletProviders(a as unknown as ConnectedAPI)
+    ).walletProvider.getCoinPublicKey(),
+  ).toBe('coin');
+  expect(mocks.gateway).not.toHaveBeenCalled();
+  a.getConfiguration.mockResolvedValue({
+    networkId: 'preview',
+    indexerUri: 'http://localhost',
+    indexerWsUri: 'ws://localhost',
+  });
+  await expect(walletProviders(a as unknown as ConnectedAPI)).rejects.toThrow(
+    'WRONG_NETWORK',
   );
 });

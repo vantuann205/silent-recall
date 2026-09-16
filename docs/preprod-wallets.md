@@ -67,3 +67,37 @@ Request test tokens for wallet 01 only for the single-wallet test. Respect fauce
 limits; do not rotate the remaining wallets to bypass them. Creation of keys is
 not evidence of importing into Lace, funding, deploying or browser signing.
 Record those outcomes separately with transaction IDs when actually confirmed.
+
+## Preprod Deployment Command
+
+`pnpm exec tsx scripts/deploy-preprod.ts check` verifies wallet 01 and waits for
+Preprod synchronization without submitting transactions. `deploy` then registers
+unregistered NIGHT for DUST, waits for DUST, deploys and initializes the contract.
+The command uses the trusted local proof server at `127.0.0.1:16300`.
+
+The manufacturer authority is saved before deployment in
+`.local/preprod/manufacturer.dpapi` using the same Windows account. A submission
+journal prevents automatic duplicate deployments after an uncertain network
+result. Confirmed metadata is written to `.local/preprod/deployment.json`.
+Never substitute the isolated local network address for a Preprod address.
+
+The initial SDK synchronization can be very slow on the public network. The
+command times out rather than submitting with incomplete state. Encrypted DUST
+checkpoints allow later runs to resume synchronization.
+
+Deployment was recorded on 11 September 2026 at `15:00:56.837Z` on Preprod,
+contract `60c13827f4cd18b5cf363fe67c344077bb147e8019dc463f42dbce2443d00050`.
+The SDK registration smoke test passed at `15:04:14.747Z` with one product.
+These records establish deployment and product registration, not a complete
+campaign/eligibility/close journey signed through the Lace extension.
+
+`pnpm exec tsx scripts/deploy-preprod.ts deploy --smoke` performs the registration
+check after deployment. It refuses to repeat an uncertain prior smoke submission.
+`generate --wallet=01` synchronizes, reconciles prior DUST registration and waits
+for a positive DUST balance. Other existing test wallets can use their own wallet
+IDs and encrypted checkpoints; only wallet 01 can deploy.
+
+The browser setup route `/manufacturer/setup` inspects Lace and permits Preprod
+deployment only with an authority backup, available DUST and no configured
+contract address. Wallet approvals remain interactive. Set the confirmed address
+in `NEXT_PUBLIC_CONTRACT_ADDRESS` and rebuild the frontend before normal use.

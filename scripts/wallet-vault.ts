@@ -53,7 +53,7 @@ export function dpapi(mode: 'protect' | 'unprotect', input: string) {
       encoding: 'utf8',
       windowsHide: true,
       timeout: 30000,
-      maxBuffer: 1024 * 1024,
+      maxBuffer: 64 * 1024 * 1024,
     },
   );
   if (result.error || result.status !== 0)

@@ -9,7 +9,7 @@
 | Real local-network runner | Actual deployment, proof generation, transaction balancing/submission, indexer confirmation and rejection paths    |
 | 21 Playwright tests       | Seven independent journeys on Chromium, Pixel 7 mobile Chrome and Firefox, including axe scans                     |
 
-There are **67 passing Vitest tests across 16 files**, including the 26 contract tests. No skipped or exclusive tests are committed. Playwright uses the compiled-contract development gateway, not a network wallet; **Playwright itself does not validate ZK cryptography**.
+On 16 September 2026, **76 Vitest tests across 18 files passed**, including the 26 contract tests. No skipped or exclusive tests are committed. Playwright uses the compiled-contract development gateway, not a network wallet; **Playwright itself does not validate ZK cryptography**.
 
 ## Coverage
 
@@ -70,4 +70,8 @@ Real UI screenshots in `docs/assets` cover desktop 1440px, tablet 768px, mobile 
 
 `pnpm audit --prod` reported no known vulnerabilities on 8 September 2026. Source checks found no raw credential logging, dangerous HTML injection, secret environment variables or credential browser persistence. This is not a security audit or a guarantee against future advisories.
 
-Not executed: public preview deployment and an interactive funded Lace browser signing session. No external funded preview wallet or configured hosting infrastructure was supplied. The genuine SDK-wallet local-network path and connector-v4 adapter tests are executed instead, with that distinction explicit.
+Preprod deployment and SDK product registration were recorded on 11 September
+2026; see [Preprod wallets](preprod-wallets.md#preprod-deployment-command).
+This does not establish a complete campaign/eligibility/close journey signed
+through the Lace extension. The full genuine proof evidence above remains from
+the isolated local network, separate from browser simulation.

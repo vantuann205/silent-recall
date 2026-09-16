@@ -173,7 +173,7 @@ One app, no traditional API backend or database. Chain state is public; private 
 
 SilentRecall cannot independently prove that a physical product exists. Wave 1 trusts the manufacturer's issuance and commitment-registration process. JSON backups are unencrypted bearer secrets. Replays are allowed; counts are not unique customers. A compromised frontend, device or wallet can expose secrets. No independent audit has been performed.
 
-Wave 2 (one product, one claim) and Wave 3 (private recall network) remain **0% implemented**. Vercel hosts the frontend only; Preprod contract deployment and an interactive funded Lace session still require suitable external infrastructure. The verified contract deployment is on the local `undeployed` network. See [roadmap](docs/wave-roadmap.md).
+Wave 2 (one product, one claim) and Wave 3 (private recall network) remain **0% implemented**. Vercel hosts the frontend only. Preprod deployment and SDK product registration were confirmed on 11 September 2026; see [Preprod setup and evidence](docs/preprod-wallets.md#preprod-deployment-command). The complete eligibility-proof lifecycle is verified on the local `undeployed` network; a full campaign/proof/close journey through the Lace extension remains unverified. See [roadmap](docs/wave-roadmap.md).
 
 ## Contributing and License
 
