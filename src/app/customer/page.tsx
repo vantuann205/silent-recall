@@ -1,4 +1,5 @@
 'use client';
+import { Fingerprint } from 'lucide-react';
 import { useRecall } from '@/providers/recall-provider';
 import { CredentialImport } from '@/features/credentials/credential-import';
 import { CampaignList } from '@/features/campaigns/campaign-list';
@@ -10,6 +11,10 @@ export default function Customer() {
     <div className="wrap">
       <div className="page-head">
         <div>
+          <div className="page-index">
+            <Fingerprint size={16} />
+            Product owner / 02
+          </div>
           <h1>Customer workspace</h1>
           <p className="muted">
             Find your recall. Keep your product details private.

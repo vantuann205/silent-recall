@@ -17,7 +17,9 @@ try {
     ).toBe(true);
   };
   await page.goto('/');
-  await expect(page.locator('.hero img')).toBeVisible();
+  await expect(
+    page.locator('.product-visual[data-ready="true"] canvas'),
+  ).toBeVisible();
   await capture('overview-desktop');
   await page.goto('/manufacturer');
   await expect(page.getByText('No recall campaigns yet')).toBeVisible();

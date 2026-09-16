@@ -10,6 +10,7 @@ import {
   LockKeyhole,
   FlaskConical,
   RefreshCw,
+  ArrowUpRight,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useRecall } from '@/providers/recall-provider';
@@ -25,7 +26,9 @@ export function Shell({ children }: { children: React.ReactNode }) {
       <header className="header">
         <div className="header-inner">
           <Link className="brand" href="/">
-            <ScanLine size={29} />
+            <span className="brand-mark">
+              <ScanLine size={24} />
+            </span>
             SilentRecall
           </Link>
           <nav className="nav" aria-label="Main navigation">
@@ -49,12 +52,10 @@ export function Shell({ children }: { children: React.ReactNode }) {
             ))}
           </nav>
           <div className="wallet">
-            {r.gateway?.mode === 'demo' ? (
-              <span className="badge">
-                <FlaskConical size={13} />
-                Local simulation
-              </span>
-            ) : null}
+            <span className="network-label">
+              <span className="status-dot" />
+              Midnight
+            </span>
             <Button
               onClick={() =>
                 void (r.status === 'connected' ? r.disconnect() : r.connect())
@@ -71,6 +72,12 @@ export function Shell({ children }: { children: React.ReactNode }) {
           </div>
         </div>
       </header>
+      {r.gateway?.mode === 'demo' ? (
+        <div className="session-banner">
+          <FlaskConical size={13} />
+          Local simulation
+        </div>
+      ) : null}
       {r.error ? (
         <div className="wrap" style={{ paddingTop: 0, paddingBottom: 0 }}>
           <div className="notice error" role="alert">
@@ -88,11 +95,14 @@ export function Shell({ children }: { children: React.ReactNode }) {
       ) : null}
       <main id="main">{children}</main>
       <footer className="footer">
-        <span>SilentRecall / Private product safety / Wave 1</span>
+        <span>
+          <strong>SilentRecall</strong>
+          <span className="footer-divider">/</span>Private product safety
+        </span>
         <div className="actions">
           <Link href="/docs">How it works</Link>
           <Link href="https://github.com/vantuann205/silent-recall">
-            GitHub
+            GitHub <ArrowUpRight size={13} />
           </Link>
           {demoAllowed() && r.gateway?.mode !== 'demo' ? (
             <button onClick={() => void r.startDemo()}>Start local demo</button>

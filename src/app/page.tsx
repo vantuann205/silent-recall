@@ -1,84 +1,167 @@
-import Image from 'next/image';
 import Link from 'next/link';
-import { ArrowRight, LockKeyhole, Factory } from 'lucide-react';
+import {
+  ArrowRight,
+  ArrowUpRight,
+  Fingerprint,
+  Factory,
+  ScanLine,
+  FileKey2,
+  ShieldCheck,
+} from 'lucide-react';
 import { buttonVariants } from '@/components/ui/button';
-import { PrivacyBoundary } from '@/components/shared/shell';
+import { ProductVisual } from '@/components/visual/product-visual';
+import { HomeMotion } from '@/components/visual/home-motion';
+
 export default function Home() {
   return (
-    <>
-      <section className="hero">
-        <Image
-          src="/product-safety.png"
-          alt="SilentRecall tamper-evident product packaging beside a stainless steel kettle"
-          fill
-          priority
-          sizes="100vw"
-        />
+    <HomeMotion>
+      <section className="hero" aria-labelledby="hero-title">
+        <ProductVisual />
         <div className="hero-content">
-          <h1>SilentRecall</h1>
-          <p>Product safety should never cost your privacy.</p>
-          <p className="muted">
-            Prove your product belongs to a recalled batch. Keep its serial
-            number and your personal details to yourself.
+          <div className="eyebrow">
+            <span className="status-dot" />
+            Private product safety / Midnight
+          </div>
+          <h1 id="hero-title">
+            SilentRecall
+            <span className="brand-period" aria-hidden="true">
+              .
+            </span>
+          </h1>
+          <p className="hero-statement">
+            Your safety.
+            <br />
+            <span>Your privacy.</span>
+            <br />
+            No compromise.
+          </p>
+          <p className="hero-description">
+            A product recall should reveal a match.
+            <br />
+            Not your identity. Not your serial number.
           </p>
           <div className="actions">
             <Link className={buttonVariants()} href="/customer">
-              <LockKeyhole />
+              <Fingerprint />
               Check a recall
-              <ArrowRight />
+              <ArrowUpRight />
             </Link>
-            <Link
-              className={buttonVariants({ variant: 'outline' })}
-              href="/manufacturer"
-            >
-              <Factory />
+            <Link className="hero-secondary" href="/manufacturer">
               Manufacturer workspace
+              <ArrowRight size={17} />
+            </Link>
+          </div>
+          <div className="hero-footnote">
+            <ScanLine size={15} />
+            <span>Zero-knowledge verification on Midnight</span>
+          </div>
+        </div>
+        <div className="object-caption" aria-hidden="true">
+          <span>SR / 001</span>
+          <span>Private product passport</span>
+          <span>Illustrative model</span>
+        </div>
+      </section>
+      <section className="protocol-strip" aria-label="Privacy boundaries">
+        <div>
+          <Fingerprint />
+          <span>Private credentials</span>
+        </div>
+        <span className="strip-line" />
+        <div>
+          <ScanLine />
+          <span>Public commitments</span>
+        </div>
+        <span className="strip-line" />
+        <div>
+          <ShieldCheck />
+          <span>Verified eligibility</span>
+        </div>
+      </section>
+      <section className="wrap entry-section">
+        <div className="section-head">
+          <div>
+            <span className="eyebrow">
+              The right information. Nothing more.
+            </span>
+            <h2>Two sides. One safer product.</h2>
+          </div>
+          <Link className="text-link" href="/privacy">
+            Explore the privacy model
+            <ArrowUpRight size={17} />
+          </Link>
+        </div>
+        <div className="entry-grid">
+          <Link href="/customer" className="entry-link">
+            <div className="entry-top">
+              <span className="entry-number">01 / Product owners</span>
+              <ArrowUpRight />
+            </div>
+            <Fingerprint
+              className="entry-symbol"
+              size={40}
+              strokeWidth={1.25}
+            />
+            <h3>
+              Check your product.
+              <br />
+              Keep your details.
+            </h3>
+            <p>
+              Import your private credential and verify eligibility for a
+              published recall.
+            </p>
+            <span className="entry-action">
+              Customer workspace
+              <ArrowRight size={17} />
+            </span>
+          </Link>
+          <Link href="/manufacturer" className="entry-link">
+            <div className="entry-top">
+              <span className="entry-number">02 / Manufacturers</span>
+              <ArrowUpRight />
+            </div>
+            <Factory className="entry-symbol" size={40} strokeWidth={1.25} />
+            <h3>
+              Protect your customers.
+              <br />
+              Not their data.
+            </h3>
+            <p>
+              Issue credentials, register product commitments and publish safety
+              recalls.
+            </p>
+            <span className="entry-action">
+              Manufacturer workspace
+              <ArrowRight size={17} />
+            </span>
+          </Link>
+        </div>
+      </section>
+      <section className="privacy-band">
+        <div className="wrap privacy-content">
+          <FileKey2 size={38} strokeWidth={1.25} />
+          <div>
+            <span className="eyebrow">Private by construction</span>
+            <h2>
+              The proof is public.
+              <br />
+              The personal details are not.
+            </h2>
+          </div>
+          <div>
+            <p>
+              Midnight verifies a registered product commitment against a
+              recall&apos;s conditions. Serial numbers, secrets and salts are
+              not published on-chain.
+            </p>
+            <Link className="text-link" href="/docs">
+              Inside the protocol
+              <ArrowUpRight size={17} />
             </Link>
           </div>
         </div>
       </section>
-      <section className="band">
-        <div className="wrap">
-          <div className="section-head">
-            <h2>Safety without oversharing.</h2>
-            <Link href="/privacy" className="actions">
-              Explore the privacy model
-              <ArrowRight size={16} />
-            </Link>
-          </div>
-          <div className="steps">
-            <article>
-              <h3>01 / A private product credential</h3>
-              <p>
-                The manufacturer creates a credential and registers a hiding
-                commitment on Midnight.
-              </p>
-            </article>
-            <article>
-              <h3>02 / A public safety notice</h3>
-              <p>
-                A recall defines the affected model, batch and eligibility
-                dates. Everyone can inspect its conditions.
-              </p>
-            </article>
-            <article>
-              <h3>03 / A private eligibility proof</h3>
-              <p>
-                The contract checks your private credential opening. Your serial
-                number, secret and salt stay private.
-              </p>
-            </article>
-          </div>
-        </div>
-      </section>
-      <div className="wrap">
-        <h2>A focused first step.</h2>
-        <p className="muted" style={{ marginTop: 12 }}>
-          Wave 1 covers private recall eligibility. Payments, claims and
-          vouchers are future work.
-        </p>
-        <PrivacyBoundary />
-      </div>
-    </>
+    </HomeMotion>
   );
 }

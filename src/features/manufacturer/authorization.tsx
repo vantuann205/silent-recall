@@ -17,7 +17,7 @@ export function Authorization() {
       </div>
     );
   return (
-    <section className="notice">
+    <section className="notice authorization">
       <LockKeyhole />
       <div style={{ width: '100%' }}>
         <h2 style={{ fontSize: 17 }}>Manufacturer authorization</h2>

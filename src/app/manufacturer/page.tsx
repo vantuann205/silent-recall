@@ -1,5 +1,5 @@
 'use client';
-import { TriangleAlert } from 'lucide-react';
+import { Factory, TriangleAlert } from 'lucide-react';
 import { useRecall } from '@/providers/recall-provider';
 import { Authorization } from '@/features/manufacturer/authorization';
 import { CampaignList } from '@/features/campaigns/campaign-list';
@@ -11,6 +11,10 @@ export default function Manufacturer() {
     <div className="wrap">
       <div className="page-head">
         <div>
+          <div className="page-index">
+            <Factory size={16} />
+            Issuer console / 01
+          </div>
           <h1>Manufacturer workspace</h1>
           <p className="muted">
             Manage private product credentials and public safety recalls.
